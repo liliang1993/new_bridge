@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
   <div class='list'>
     <el-row>
         <el-col :span='24' class='actions-top'>
@@ -98,4 +98,15 @@ module.exports=ListJs;
     .actions-top{
         margin-bottom: 10px;
     }
-</style>
+</style> -->
+<template>
+    <form-data1
+      ref='form-data'
+      :FieldList='fieldlist'
+      >  
+      </form-data1>
+</template>
+<script >
+import ListJs from './List.js';
+module.exports=ListJs;
+</script>

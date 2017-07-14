@@ -3,7 +3,8 @@ import {
     Home,
     NotFound,
     Content,
-    Modules
+    Modules,
+    Common 
 } from '../components/';
 
 // console.log(Modules);
@@ -116,7 +117,7 @@ module.exports = [
          return 'lpsymbol'
     }
     }]
-},{
+ },{
     path: '/home',
     name: 'Home',
     icon: 'inbox',
@@ -139,6 +140,7 @@ module.exports = [
     }
     }]
 },{
+    
     path: '/home',
     name: 'Home',
     icon: 'inbox',
@@ -300,7 +302,7 @@ module.exports = [
     children: [{
         path: 'list',
         name: 'List',
-        component:  Modules.TopTraders.List
+        component:  Common.TopTraders.List
     }]
 },
 {
@@ -313,7 +315,7 @@ module.exports = [
     children: [{
         path: 'mt4positions',
         name: 'MT4positions',
-        component: Modules.MT4Positions.List
+        component: Common.MT4Positions.List
     }
     ]
 },
@@ -328,7 +330,7 @@ module.exports = [
     {
         path: 'mt4trades',
         name: 'MT4trades',
-        component: Modules.MT4Trades.List
+        component: Common.MT4Trades.List
     }]
 },
 {
@@ -341,7 +343,7 @@ module.exports = [
     children: [{
         path: 'User',
         name: 'MT4User',
-        component: Modules.MT4User.List
+        component: Common.MT4User.List
     }]
 },
 

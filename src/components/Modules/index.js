@@ -18,8 +18,8 @@ module.exports = {
     Diagnosis: require('./Diagnosis/'),
 
 
-    TopTraders: require('./TopTraders/'),
-    MT4Positions: require('./MT4Positions/'),
-    MT4Trades: require('./MT4Trades/'),
-    MT4User: require('./MT4Users/')
+    // TopTraders: require('./TopTraders/'),
+    // MT4Positions: require('./MT4Positions/'),
+    // MT4Trades: require('./MT4Trades/'),
+    // MT4User: require('./MT4Users/')
 };

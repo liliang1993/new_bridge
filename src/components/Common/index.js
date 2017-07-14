@@ -12,5 +12,7 @@ module.exports = {
    	DragDialog: require('./DragDialog/'),
    	
    	MT4Trades: require('./MT4Trades/'),
-    	MT4User: require('./MT4Users/')	
+    	MT4User: require('./MT4Users/'),
+    	MT4Positions: require('./MT4Positions/'),
+    	TopTraders: require('./TopTraders/')		
 };

@@ -53,13 +53,15 @@ module.exports = {
          * @return {object} [表单需要的字段]
          */
         deepObj() {
+         var len;
             if (this.fields) {
                 var fields = this.fields,
                     k = 0,
                     update = this.submit_data.id ? true : false;
-                for (var i = 0; i < fields.length; i++) {
+                     console.log('333333333',this.fields);
+                for (var i = 0;i <fields.length; i++){
                     var field = fields[i];
-
+                    console.log('222222222',i,len);
                     if (field.value && field.value.constructor === Object) {
                         if (field.checkall && typeof field.checkall === 'object') {
                             var temp = {};
@@ -76,6 +78,7 @@ module.exports = {
                         this.$set(this.submit_data, field.key, field.value);
                     }
                     var _this = this;
+                    console.log('11111',field);
                     if (field.type) {
                         switch (field.type) {
                         case 'editor':
@@ -88,14 +91,16 @@ module.exports = {
                             this.wangEditor.has = true;
                           }
                           break;
-                          case 'CheckboxAndInputList' : 
-                                this.submit_data.field.key = [ ];
-                                for(var i = 0;i < field.spec.length;i++){
-                                       this.submit_data.field.key .push({
+                          case 'CheckboxAndInputList': 
+                                this.$set(this.submit_data,field.key,[]);
+                                console.log('555555555',this.submit_data[field.key]);
+                                for(var j = 0;j < field.spec.length;j++){
+                                       this.submit_data[field.key].push({
                                             checked : false,
                                             tol: '',
-                                            type: i
+                                            type: j
                                        });
+                                       console.log('submit_data123',this.submit_data[field.key]);
                                 };
                                 // if(field.default){
                                 //         for(var j = 0; j < field.default.length; j++){
@@ -112,11 +117,22 @@ module.exports = {
                                 // }
                                 break;
                           case 'MultipleInput':
-                                 this.submit_data.field.key = [];
-                                  for(var i = 0; i< field.spec.length ; i++){
-                                            this.input_group[i] = '';
+                                 this.$set(this.submit_data,field.key,[]);
+                                  for(var m = 0; m< field.spec.length ; m++){
+                                            this.input_group[m] = '';
                                   };
                               break;
+                          case 'RouteType':
+                              this.$set(this.submit_data,field.key,{});
+                              this.$set(this.submit_data[field.key],'threshold' , '0');
+                              this.$set(this.submit_data[field.key],'right' , '');
+                              this.$set(this.submit_data[field.key],'left' , '');
+                              if(field.default){
+                                  for(var attr in field.default){
+                                    this.$set(this.submit_data[field.key],attr,field.default[attr]);
+                                  }
+                              }
+                            break;
                     }
                   }
                 }
@@ -129,23 +145,64 @@ module.exports = {
          * 表单提交事件
          */
         
-        onSubmit(ref) {
-            var data = this.submit_data;
-            console.log('submit',data);
+        get_field_type:(key)=>{
+          for(var field of this.fields){
+                    if(field.key === key){
+                          return field.type;
+                    }
+            }
+        },
+        onSubmit:(ref)=>{
+            // var data = Object.assign({},this.submit_data);
+            // for(var key in data){
+            //     var type =thisget_field_type(key);
+            //     switch (type){
+            //       case 'int':
+            //           data[key] = parseInt(data[key]);
+            //           break;
+            //       case 'float':
+            //           data[key] = parseFloat(data[key]);
+            //           break;
+            //       case 'MultipleInput'
+                      
+            //     }
+            // }
+            var res={};
+            for(var field of this.fields){
+                var key = field.key;
+                var data = this.submit_data[key];
+                switch(field.type){
+                  case 'int':
+                      res[key] = parseInt(data);
+                      break;
+                  case 'float':
+                      res[key] = parseFloat(data);
+                      break;
+                  case 'MultipleInput':
+                      for(var i = 0;i<data.length;i++){
+                            var input_group = data[i];
+                            // for()
+                      }
+                      
+                }
+            }
+            console.log('submit',res);
             if (this.rules) {
                 this.$refs[ref].validate((valid) => {
                     if (valid) {
-                        this.$emit('onSubmit', data);
+                        this.$emit('onSubmit', res);
                     }
                 });
             } else {
-                this.$emit('onSubmit', data);
+                this.$emit('onSubmit', res);
             }
         },
         //MultipleInput  
         //add event
         onAddInputGroup(key){
+
             this.submit_data[key].push(this.input_group);
+            console.log('this.input_group',this.input_group,key,this.submit_data[key]);
         },
 
         //del event
@@ -183,8 +240,8 @@ module.exports = {
     /**
      * ready
      */
-    mounted(){
-        // this.deepObj();
+    created(){
+        this.deepObj();
     },
 
 
@@ -230,40 +287,19 @@ module.exports = {
         FieldList:{
            deep: true,
            handler: function(val, oldVal){
-             console.log('val',val);
               this.fields =val;
            }
         },
-        'FieldList.label':  (val ,oldVal)=>{
-              console.log('label',val,oldVal);
-        },
-        // FieldList(v) {
-        //     if (v) {
-        //         this.fields = v;
-        //     }
-        // },
-        //  DefaultValue(v) {
-        //     if (v) {
-        //         this.submit_data = v;
-        //          console.log('2011',this.submit_data); 
-        //     }
-        // }
         DefaultValue: {
              deep: true,
              handler: function(val, oldVal) {
-                console.log('val',val,oldVal);
                 this.submit_data = val;
-                 console.log('2011',this.submit_data); 
-                
              }
         },
         Rules: {
              deep: true,
              handler: function(val, oldVal) {
-                console.log('val',val,oldVal);
-                this.rules = val;
-                 console.log('2011',this.rules); 
-                
+                this.rules = val; 
              }
         },
     }

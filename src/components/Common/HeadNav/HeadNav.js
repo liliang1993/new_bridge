@@ -5,10 +5,10 @@ import {
 import {LANGS} from 'i18n/lang';
 import DragDialog from '../DragDialog/';
 import FormData from '../FormData/';
-import TopTraders from 'modules/TopTraders/';
+import TopTraders from 'common/TopTraders/';
 import Mt4Trades from 'common/MT4Trades/';
 import Mt4Users from 'common/MT4Users/';
-import Mt4Positions from 'modules/MT4Positions/';
+import Mt4Positions from 'common/MT4Positions/';
 import Vue from 'vue';
 module.exports = {
     name: 'head-nav',

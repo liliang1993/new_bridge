@@ -12,7 +12,7 @@
                 :label="$t(field.label)"
                 :prop='field.key'
                 :style="field.item_style">
-
+                                           
                 <!-- 单选CheckBox -->
                 <el-checkbox 
                     v-if='field.type==="checkbox" && field.multiple!==true'
@@ -36,7 +36,6 @@
                             :label="item.value">{{item.text}}</el-checkbox>
 
                 </el-checkbox-group>
-
                 <el-input
                     v-if="field.type === 'input'||field.type === 'int' || field.type === 'float' ||field.type === 'string'|| field.type === 'text' "
                     :type='field.type ==="textarea" ? "textarea" : "input" '
@@ -48,7 +47,7 @@
                  -->
                 <template  v-if='field.type==="CheckboxAndInputList" '>
                         <div  v-for='(item ,index) in field.spec'>
-                                  <el-checkbox v-model="submit_data[field.key][index].checked"> {{item[0]}}</el-checkbox>
+                                  <el-checkbox v-model="submit_data[field.key][index].checked"> {{item}}</el-checkbox>
                                   <el-input  :placeholder='field.desc'  v-model ='submit_data[field.key][index].tol'>
                                   </el-input>
                         </div>
@@ -56,25 +55,25 @@
                 <!--
                     MultipleInput
                  -->
-                <template v-if='field.type==="MultipleInput"' >
+                 <template  v-if='field.type==="MultipleInput" '>
                             <div  class='MultipleInput'  v-for='(input_group,index1) in submit_data[field.key]'>
                                 <el-input
                                 v-for='(item, index2) in input_group'
                                 type="input"
-                                v-model='submit_data[index1][index2]'
+                                v-model='submit_data[field.key][index1][index2]'
                                 :placeholder='item.desc'
                                 class='MultipleInput'
                                 >
                                 </el-input>
                                 <el-button class='dynamic_delbtn' type='danger' @click.prevent="onRemoveInputGroup(field.key,index1)">Del</el-button>
                             </div>
-                             <el-button type='info' @click.prevent="onAddInputGroup(field.key)">Add</el-button>
+                            <el-button class='dynamic_delbtn' type='info' @click.prevent="onAddInputGroup(field.key)">Add</el-button>
                 </template>
                 <!--
                     RouteType
                  -->
-                    <template v-if='field.type==="RouteType"' >
-                                    <div>
+                    <template>
+                                    <div  v-if='field.type==="RouteType"' >
                                             if size &gt;= 
                                             <el-input  type='input'  v-model = 'submit_data[field.key].threshold'></el-input>  
                                             then 

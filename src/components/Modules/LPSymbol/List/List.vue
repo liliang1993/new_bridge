@@ -29,20 +29,36 @@
     </bel-table> 
 
     <drag-dialog
-                v-if = 'symbolDialog.show'
-                :title="symbolDialog.title"
-                :isModal = "symbolDialog.isModal"
-                @close="onCloseDialog"
+                v-if = 'add_symbol_dialog.show'
+                :title="add_symbol_dialog.title"
+                :isModal = "add_symbol_dialog.isModal"
+                @close="onCloseDialog(type)"
         >
-
                 <form-data
                   style="padding:20px 40px 20px 20px"
-                  :LabelWidth='labelWidth'
                   ref='form-data'
                   :FieldList='fieldlist'
                   :DefaultValue='default_value'
                   :Rules='rules'
-                  @onSubmit='onSubmit'
+                  @onSubmit='add_symbol_dialog'
+                  >
+                  </form-data>
+        </drag-dialog>
+
+        <drag-dialog
+                v-if = 'edit_symbol_dialog.show'
+                :title="edit_symbol_dialog.title"
+                :isModal = "edit_symbol_dialog.isModal"
+                @close="onCloseDialog('edit_symbol_dialog')"
+        >
+
+                <form-data
+                  style="padding:20px 40px 20px 20px"
+                  ref='form-data'
+                  :FieldList='edit_symbol_fieldlist'
+                  :DefaultValue='default_value'
+                  :Rules='rules'
+                  @onSubmit='edit_symbol_submit'
                   >
                   </form-data>
         </drag-dialog>

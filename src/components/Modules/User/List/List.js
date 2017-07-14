@@ -1,5 +1,5 @@
 import {
-    FormData,
+    FormData1,
     DragDialog
 } from 'common/';
 import {
@@ -8,20 +8,28 @@ import {
 module.exports = {
     name: 'user_list',
     components: {
-        FormData,
+        FormData1,
         DragDialog
     },
         data () {
       return {
-         userDialog:{
-              show:false,
-              isModal: true,
-              title:{
-                text:'Add user'
-              }
-        },
+          add_user_dialog:{
+                show:false,
+                isModal: true,
+                title:{
+                  text:'Add user'
+                }
+          },
+          edit_user_dialog:{
+                show:false,
+                // isModal: true,
+                title:{
+                  text:'Add User'
+                }
+          },
+        default_value :{},
         nowTime: '',
-        tableData: [],
+        tableData: [ ] ,
         pagination: {
                 current_page: 1,
                 total: 0,
@@ -29,33 +37,7 @@ module.exports = {
                 page_sizes: [3, 9, 12, 24],
                 layout: "total, sizes, prev, pager, next, jumper"
             },
-        labelWidth:  '150px',  
-        default_value: {},
-        rules: {
-           
-            password: [
-                                  {required: true, message: '请填写密码', trigger: 'blur'},
-                                  { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
-                              ],
-            confirm_password: [
-                                  {required: true, message: '密码不能为空', trigger: 'blur'},
-                                  {
-                                    trigger: 'blur',
-                                    validator: (rule, value, callback) => {
-
-                                        if (value === '') {
-                                            callback(new Error('请再次输入密码'));
-                                        } else if (value !==  this.$refs['user-form']. submit_data.password) {
-                                                 callback(new Error('两次输入密码不一致!'));
-                                            }else{
-                                                callback();
-                                            }    
-                                        }
-                                    }
-                                ],
-              desc:   {required: true, message: this.$t('请填写相关描述'), trigger: 'blur'}
-        },
-        page_func_name: 'user.page_user'
+          page_func_name: 'user.page_user'
       }
     },
     computed: {
@@ -127,121 +109,181 @@ module.exports = {
           }
         }
       },
-      fieldlist(){
+      add_user_fieldlist(){
         return  [
                 {
                     type:'input',
                     key:'username',
                     label: 'User',
-                    // value:''
+                    value:''
                 },
                 {
                   type:'input',
                     key:'password',
-                    // value:'',
+                    value:'',
                     label: 'Password'
-                },
-                {
-                    type:'input',
-                    key:'confirm_password',
-                    // value:'',
-                    label: 'Confirm Password'
                 },
                 {
                     key: 'role',
                     type: 'select',
                     value: {
                         default: 'Admin',
-                        list: [{
-                            value: 'Admin',
-                            text: 'Admin'
-                        }, {
-                            value: 'RulesEditor',
-                            text: 'RulesEditor'
-                        }]
+                        list: (()=>{
+                              var i,len,roles,role,result;
+                              result = [];
+                              roles = this.$store.state.global.roles;
+                              console.log('roles',roles);
+                              for (i = 0 ,len = roles.length; i<len; i++) {
+                                       role = roles[i];
+                                       result.push({value: role,text:role});
+                              }
+                                return result;
+                        })()
                     },
                     desc: '请选择',
                     label: 'Role'
                 },
                 {
-                    key: 'status',
-                    type: 'select',
-                    value: {
-                        default: 0,
-                        list: [{
-                            value: 0,
-                            text: 'Enabled'
-                        }, {
-                            value: 1,
-                            text: 'Disabled'
-                        }]
-                    },
-                    hidden: true,
-                    desc: '请选择',
-                    label: 'Status'
+                  type:'input',
+                    key:'lps',
+                    value:'',
+                    label: 'LPs'
                 },
+                {
+                  type:'input',
+                    key:'groups',
+                    value:'',
+                    label: 'Groups'
+                },
+                {
+                  type:'input',
+                    key:'symbols',
+                    value:'',
+                    label: 'MT4 Symbols'
+                },            
                 {
                     type:'input',
                     key:'desc',
                     label: 'Description'
                   }
                 ]
+      },
+      edit_user_fieldist(){
+          return [
+                  {
+                    type:'input',
+                    key:'username',
+                    label: 'User',
+                    disabled: true,
+                    value:''
+                },
+                {
+                  type:'input',
+                    key:'password',
+                    value:'',
+                    label: 'Password'
+                },
+                {
+                    key: 'role',
+                    type: 'select',
+                    value: {
+                        default: 'Admin',
+                        list: (()=>{
+                              var i,len,roles,role,result;
+                              result = [];
+                              roles = this.$store.state.global.roles;
+                              for (i = 0 ,len = roles.length; i<len; i++) {
+                                       role = roles[i];
+                                       result.push({value: role,text:role});
+                              }
+                              return result;
+                        })()
+                  },
+                  desc: '请选择',
+                  label: 'Role'
+                },
+                   {
+                  type:'input',
+                    key:'lps',
+                    value:'',
+                    label: 'LPs'
+                },
+                 {
+                  type:'input',
+                    key:'groups',
+                    value:'',
+                    label: 'Groups'
+                },
+                {
+                  type:'input',
+                    key:'symbols',
+                    value:'',
+                    label: 'MT4 Symbols'
+                }, 
+                {
+                    key: 'status',
+                    type: 'select',
+                    value: {
+                        default:  0,
+                        list: [
+                          {value: 0, text : 'Enabled'},
+                         {value: 1, text : 'Disabled'}
+                        ]
+                   },
+                   desc: '请选择',
+                    label: 'status'
+              },
+              {
+                    type:'input',
+                    key:'desc',
+                    label: 'Description'
+              }
+              ]
       }
     },
     methods: {
-          onCloseDialog(){
-           this.userDialog.show = false;
+          onCloseDialog(type){
+           this[type].show = false;
          },
         onAddUser(){      
-                this.userDialog.title.text = this.$t('Add user'); 
-                this.userDialog.show = true;  
-                this.fieldlist.forEach(item=>{
-                    if(item.key == 'username'){
-                        item.disabled = false;
-                    }else if(item.key == 'status'){
-                          item.hidden = true;
-                    }
-            });
-            this.rules = Object.assign({},this.rules,{ username:{required: true, message: '请输入用户名', trigger: 'blur'}});
-            this.default_value  = Object.assign({},{
-            username:'',
-            password:'',
-            confirm_password:'',
-            role:'Admin',
-            status:0,
-            desc:''
-            });
+                this.add_user_dialog.show = true;  
         },
+
         onEditUser(row) {
-             this.userDialog.show = true;
-             this.userDialog.title.text =this.$t('Edit user') ;
-             this.rules = Object.assign({},this.rules,{ username:{}});
-            this.fieldlist.forEach(item=>{
-                  if(item.key == 'username'){
-                      item.disabled = true;
-                  }else if(item.key == 'status'){
-                        item.hidden = false;
-                  }
+            this.edit_user_dialog.show = true; 
+            this.$nextTick(() => {
+                  Object.assign(this.default_value ,row,{password:''});           
             });
-            this.default_value = Object.assign({},this.default_value,row,{password:''});
         },
-        onSubmit(data){
-            if( this.userDialog.title.text == 'Add user'){
+        add_user_submit(data){
                 var params = {
                     func_name: "user.create_user",
-                    args: [data.username, data.password, data.role, data.desc ]
+                    args: [data.username, data.password, data.role, data.desc ],
+                    kwargs:{groups:data.groups,  lps: data.lps ,symbols: data.symbols}
                 }; 
-            }else{
-                var params = {
-                    func_name: "user.update_user",
-                    args: [data.user_id, data.password, data.role, data.status, data.desc ]
-                };
-            }
-            CommonApi.postFormAjax(params,data=>{
+                CommonApi.postFormAjax.call(this,params,data=>{
                         this.getCurrentPageTable();
-                        this.userDialog.show = false;
-                });
+                        this.add_user_dialog.show  = false;
+                       },{errFn(err){
+                            console.log('12345');
+                            this.$message({
+                              showClose: true,
+                              message:  err.response.data,
+                              type: 'error'
+                            });
+                        }});            
         },
+    edit_user_submit(data){
+       var params = {
+                    func_name: "user.update_user",
+                    args: [data.user_id, data.password, data.role, data.status, data.desc ],
+                    kwargs:{groups:data.groups,  lps: data.lps ,symbols: data.symbols}
+                };
+               CommonApi.postFormAjax.call(this,params,data=>{
+                        this.getCurrentPageTable();
+                        this.edit_user_dialog.show  = false;
+                       });      
+    },
         init(){
             this.getCurrentPageTable();
             this.nowTime=(new Date()).toString();

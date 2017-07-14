@@ -103,6 +103,7 @@ module.exports=ListJs;
     <form-data1
       ref='form-data'
       :FieldList='fieldlist'
+      :DefaultValue='default_value'
       >  
       </form-data1>
 </template>

@@ -85,7 +85,8 @@ module.exports = function(type, url, data, fn, {
                         this.$store.dispatch('hide_loading');
                         // this.$store.dispatch('clear_interval');
                         // console.dir('sssssssssssss',err.response.statusText);
-                        console.dir(err);
+                        console.log('222222222',err);
+
                         if (!isTimeout) {
                                 clearTimeout(timer);
                         };
@@ -95,8 +96,9 @@ module.exports = function(type, url, data, fn, {
                                                 });
                                 return;
                         }
-                        cbs.requestError.call(this, err);
-                        errFn && errFn.call(this);
+                                
+                        // cbs.requestError.call(this, err);
+                        errFn && errFn.call(this,err);
                 });
         }
 };

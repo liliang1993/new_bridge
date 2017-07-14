@@ -22,26 +22,34 @@
                 <!-- 复选CheckBox -->
                 <!-- 是否全选全不选 -->
                 <el-checkbox
-                    v-if='field.checkall && typeof field.checkall==="object" && submit_data[field.key+checkall_temp]'
-                    :indeterminate="submit_data[field.key+checkall_temp].indeterminate"
-                    v-model="submit_data[field.key+checkall_temp].value"
-                    @change='onCheckallChange(field.key)'>{{submit_data[field.key+checkall_temp].text}}</el-checkbox>
+                    v-if='field.checkall && typeof field.checkall==="object" && submit_data[field.key]'
+                    :indeterminate="submit_data[field.key].indeterminate"
+                    v-model="submit_data[field.key].value"
+                    @change='onCheckallChange(field.key)'>{{submit_data[field.key].text}}</el-checkbox>
                 <!-- CheckBox选项列表 -->
                 <el-checkbox-group
-                    v-if='(field.type==="checkbox" && field.multiple===true && !field.checkall) || (field.type==="checkbox" && field.multiple===true && field.checkall && submit_data[field.key+checkall_temp])'
-                    v-model="submit_data[field.key+checkall_temp].checkbox_value"
+                    v-if='(field.type==="checkbox" && field.multiple===true && !field.checkall) || (field.type==="checkbox" && field.multiple===true && field.checkall && submit_data[field.key])'
+                    v-model="submit_data[field.key].checkbox_value"
                     @change='onCheckboxChange(field.key)'>
                         <el-checkbox
-                            v-for='item in submit_data[field.key+checkall_temp].checkbox_list'
+                            v-for='item in submit_data[field.key].checkbox_list'
                             :label="item.value">{{item.text}}</el-checkbox>
 
                 </el-checkbox-group>
+
                 <el-input
                     v-if="field.type === 'input'||field.type === 'int' || field.type === 'float' ||field.type === 'string'|| field.type === 'text' "
                     :type='field.type ==="textarea" ? "textarea" : "input" '
                     :disabled = 'field.disabled'
                     v-model="submit_data[field.key]"
                     :placeholder='field.desc'></el-input>
+
+                    <!-- 
+                        checkbox_list 
+                    -->
+                      <el-checkbox-group v-if='field.type ==="CheckBoxList" '  v-model="submit_data[field.key]">
+                        <el-checkbox v-if='field.list.length>0'  v-for="item in field.list"  :label="item"></el-checkbox>
+                      </el-checkbox-group>
                 <!--
                     checkbox+input
                  -->
@@ -53,15 +61,17 @@
                         </div>
                 </template>
                 <!--
+                    
+                 -->
+                <!--
                     MultipleInput
                  -->
                  <template  v-if='field.type==="MultipleInput" '>
                             <div  class='MultipleInput'  v-for='(input_group,index1) in submit_data[field.key]'>
                                 <el-input
                                 v-for='(item, index2) in input_group'
-                                type="input"
                                 v-model='submit_data[field.key][index1][index2]'
-                                :placeholder='item.desc'
+                                :placeholder='field.spec[index2].desc'
                                 class='MultipleInput'
                                 >
                                 </el-input>

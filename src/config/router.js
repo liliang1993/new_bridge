@@ -131,7 +131,7 @@ module.exports = [
          path: 'traderule',
          name: 'Trade rule',
          icon: 'inbox',
-        component: Modules.TradeRule1.List
+        component: Modules.TradeRule.List
     },{
      hidden: true,
      path: '',

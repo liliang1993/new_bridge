@@ -32,17 +32,15 @@
                 v-if = 'add_symbol_dialog.show'
                 :title="add_symbol_dialog.title"
                 :isModal = "add_symbol_dialog.isModal"
-                @close="onCloseDialog(type)"
+                @close="onCloseDialog('add_symbol_dialog')"
         >
-                <form-data
+                <form-data1
                   style="padding:20px 40px 20px 20px"
                   ref='form-data'
-                  :FieldList='fieldlist'
-                  :DefaultValue='default_value'
-                  :Rules='rules'
-                  @onSubmit='add_symbol_dialog'
+                  :FieldList='add_symbol_fieldlist'
+                  @onSubmit='add_symbol_submit'
                   >
-                  </form-data>
+                  </form-data1>
         </drag-dialog>
 
         <drag-dialog
@@ -52,15 +50,14 @@
                 @close="onCloseDialog('edit_symbol_dialog')"
         >
 
-                <form-data
+                <form-data1
                   style="padding:20px 40px 20px 20px"
-                  ref='form-data'
+                  ref='form-data1'
                   :FieldList='edit_symbol_fieldlist'
                   :DefaultValue='default_value'
-                  :Rules='rules'
                   @onSubmit='edit_symbol_submit'
                   >
-                  </form-data>
+                  </form-data1>
         </drag-dialog>
   </div>
 </template>

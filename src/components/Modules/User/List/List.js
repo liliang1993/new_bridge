@@ -11,7 +11,7 @@ module.exports = {
         FormData1,
         DragDialog
     },
-        data () {
+    data () {
       return {
           add_user_dialog:{
                 show:false,
@@ -22,14 +22,14 @@ module.exports = {
           },
           edit_user_dialog:{
                 show:false,
-                // isModal: true,
+                isModal: true,
                 title:{
-                  text:'Add User'
+                  text:'Edit User'
                 }
           },
         default_value :{},
         nowTime: '',
-        tableData: [ ] ,
+        tableData: [] ,
         pagination: {
                 current_page: 1,
                 total: 0,
@@ -40,7 +40,7 @@ module.exports = {
           page_func_name: 'user.page_user'
       }
     },
-    computed: {
+    computed:{
       tableConfig: {
         get () {
           return {
@@ -124,7 +124,6 @@ module.exports = {
                     label: 'Password'
                 },
                 {
-                    key: 'role',
                     type: 'select',
                     value: {
                         default: 'Admin',
@@ -242,17 +241,18 @@ module.exports = {
       }
     },
     methods: {
-          onCloseDialog(type){
-           this[type].show = false;
+        onCloseDialog(type){
+          this[type].show = false;
          },
         onAddUser(){      
-                this.add_user_dialog.show = true;  
+            this.add_user_dialog.show = true; 
         },
 
         onEditUser(row) {
             this.edit_user_dialog.show = true; 
             this.$nextTick(() => {
-                  Object.assign(this.default_value ,row,{password:''});           
+                  Object.assign(this.default_value,row,{password:''});
+                  console.log('default',this.default_value) ;          
             });
         },
         add_user_submit(data){

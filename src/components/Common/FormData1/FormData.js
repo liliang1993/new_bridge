@@ -258,7 +258,9 @@ module.exports = {
       console.log('submit_data',this.DefaultValue);
         this.deepObj();
     },
-
+    mounted(){
+      // console.log('8888888',this.DefaultValue);
+    },
 
     /**
      * 接收参数
@@ -315,7 +317,7 @@ module.exports = {
         DefaultValue(v) {
       if (v) {
         // this.submit_data = v;
-        console.log('default',v);
+        console.log('default55555555555',v);
       }
     },
         // DefaultValue: {

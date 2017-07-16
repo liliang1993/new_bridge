@@ -7,19 +7,33 @@
             <div class="right-content"  >
                 <div class="content" :style="{marginLeft:$store.state.leftmenu.width}"  v-loading.lock = '$store.state.global.ajax_loading'>
                     <bread></bread>
-                    <!-- <button @click="handleClick1()">ceshiButton1</button> -->
                     <router-view></router-view>
                 </div>
             </div>
         </div>
+        <traderule-remark></traderule-remark> 
+        <copy-group></copy-group>
     </div>
 </template>
 <script>
-    import Common from '../Common/';
-    // import Axios from 'axios'
+    import {
+        Bread,
+        HeadNav,
+        LeftMenu
+    } from '../Common/';
+    import {
+        Remark as TraderuleRemark,
+        CopyGroup
+    }from '../Common/DialogView/TradeRule';
     export default {
         name: 'home',
-        components:Common
+        components:{
+            Bread,
+            HeadNav,
+            LeftMenu,
+            TraderuleRemark,
+             CopyGroup
+        }
     }
 </script>
 <style scoped lang='less'>

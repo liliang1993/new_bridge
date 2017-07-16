@@ -1,36 +1,37 @@
 import {
         FormDialog,
-        FormData,
+        FormData1,
         DragDialog
 } from 'common/';
 import {
         common as CommonApi
 } from 'config/request.js';
 module.exports = {
-                name: 'lp_symbol',
-                components: {
-                        FormDialog,
-                        FormData,
-                        DragDialog
-                },
-                data() {
-                        return {
-                                add_symbol_dialog: {
-                                        show: false,
-                                        isModal: true,
-                                        title: {
-                                                text: 'Add LP Symbol',
-                                        }
-                                },
-                                edit_symbol_dialog: {
-                                        show: false,
-                                        isModal: true,
-                                        title: {
-                                                text: 'Add LP Symbol',
-                                        }
-                                },
-                                tableData: [],
-                                default_value: {},
+        name: 'lp_symbol',
+        components: {
+                FormDialog,
+                FormData1,
+                DragDialog
+        },
+        data() {
+                return {
+                        add_symbol_dialog: {
+                                show: false,
+                                isModal: true,
+                                title: {
+                                        text: 'Add LP Symbol',
+                                }
+                        },
+                        edit_symbol_dialog: {
+                                show: false,
+                                isModal: true,
+                                title: {
+                                        text: 'Edit LP Symbol',
+                                }
+                        },
+                        tableData: [],
+                        default_value:{},
+                }
         },
         computed: {
                 tableConfig: {
@@ -123,7 +124,7 @@ module.exports = {
                                 }
                         }
                 },
-                fieldlist() {
+                add_symbol_fieldlist() {
                         return [{
                                 type: 'input',
                                 key: 'std_symbol',
@@ -132,28 +133,33 @@ module.exports = {
                                 key: 'lp',
                                 type: 'select',
                                 value: {
-                                        // default: 'imax',
-                                        list: []
+                                        default: '',
+                                        list: (() => {
+                                                var i, len, std_symbols, std_symbol, result;
+                                                result = [];
+                                                std_symbols = this.$store.state.global.std_symbols;
+                                                for (i = 0, len = std_symbols.length; i < len; i++) {
+                                                        std_symbol = std_symbols[i];
+                                                        result.push({
+                                                                value: std_symbol,
+                                                                text: std_symbol
+                                                        });
+                                                }
+                                                return result;
+                                        })()
                                 },
                                 desc: '请选择',
                                 label: 'LP'
                         }, {
-                                key: 'lp',
-                                type: 'input',
-                                // value: 'imax',
-                                hidden: true,
-                                disabled: true,
-                                label: 'LP'
-                        }, {
                                 type: 'input',
                                 key: 'lp_symbol',
-                                // value:'',
+                                value: '',
                                 label: 'LP symbol'
                         }, {
                                 key: 'quote_enable',
                                 type: 'select',
                                 value: {
-                                        // default: 'true',
+                                        default: 'true',
                                         list: [{
                                                 value: true,
                                                 text: 'true'
@@ -168,7 +174,7 @@ module.exports = {
                                 key: 'trade_enable',
                                 type: 'select',
                                 value: {
-                                        // default: 'true',
+                                        default: 'true',
                                         list: [{
                                                 value: true,
                                                 text: 'true'
@@ -182,89 +188,154 @@ module.exports = {
                         }, {
                                 type: 'input',
                                 key: 'weight',
-                                // value:'',
+                                value: '',
                                 label: 'Weight'
                         }, {
                                 type: 'input',
                                 key: 'min_qty',
-                                // value:'',
+                                value: '',
                                 label: 'Min Qty'
                         }, {
                                 type: 'input',
                                 key: 'contract_size',
-                                // value:'',
+                                value: '',
+                                label: 'Contract Size'
+                        }]
+                },
+                edit_symbol_fieldlist() {
+                        return [{
+                                        type: 'input',
+                                        key: 'std_symbol',
+                                        disabled: true,
+                                        value:'',
+                                        label: 'STD symbol'
+                                }, {
+                                        type: 'input',
+                                        key: 'lp',
+                                        disabled: true,
+                                        value:'',
+                                        label: 'LP'
+                                }, {
+                                        type: 'input',
+                                        key: 'lp_symbol',
+                                        disabled: true,
+                                        value:'',
+                                        label: 'LP symbol'
+                                }, {
+                                        key: 'quote_enable',
+                                        type: 'select',
+                                        value: {
+                                                default: '',
+                                                list: [{
+                                                        value: true,
+                                                        text: 'true'
+                                                }, {
+                                                        value: false,
+                                                        text: 'false'
+                                                }]
+                                        },
+                                        desc: '请选择',
+                                        label: 'Quote Enable'
+                                }, {
+                                        key: 'trade_enable',
+                                        type: 'select',
+                                        value: {
+                                                default: '',
+                                                list: [{
+                                                        value: true,
+                                                        text: 'true'
+                                                }, {
+                                                        value: false,
+                                                        text: 'false'
+                                                }]
+                                        },
+                                        desc: '请选择',
+                                        label: 'Trade Enable'
+                                },{
+                                type: 'input',
+                                key: 'weight',
+                                value: '',
+                                label: 'Weight'
+                        }, {
+                                type: 'input',
+                                key: 'min_qty',
+                                value: '',
+                                label: 'Min Qty'
+                        }, {
+                                type: 'input',
+                                key: 'contract_size',
+                                value: '',
                                 label: 'Contract Size'
                         }]
                 }
         },
         methods: {
-                onCloseDialog() {
-                        this.symbolDialog.show = false;
+                onCloseDialog(type) {
+                        this[type].show = false;
                 },
                 onAddSymbol() {
-                        this.symbolDialog.title.text = this.$t('Add LP symbol');
-                        this.symbolDialog.show = true;
-                        this.fieldlist.forEach(item => {
-                                if (item.key == 'lp') {
-                                        if (item.type == 'select') {
-                                                item.hidden = false;
-                                                item.value.list = [];
-                                                this.$store.state.global.lps.forEach((lp, index) => {
-                                                        this.$set(item.value.list, index, {
-                                                                value: lp,
-                                                                text: lp
-                                                        });
-                                                })
-                                        } else {
-                                                item.hidden = true;
-                                        }
-                                } else if (item.key == 'std_symbol' || item.key == 'lp_symbol') {
-                                        item.disabled = false;
-                                }
-                        });
-                        this.default_value = Object.assign({}, this.default_value, {
-                                std_symbol: '',
-                                lp: this.$store.state.global.lps[0],
-                                lp_symbol: '',
-                                quote_enable: true,
-                                trade_enable: true,
-                                weight: '',
-                                min_qty: '',
-                                contract_size: ''
-                        });
+                        this.add_symbol_dialog.show = true;
                 },
                 onEditSymbol(row) {
-                        this.symbolDialog.show = true;
-                        this.symbolDialog.title.text = this.$t('Edit LP symbol');
-                        this.fieldlist.forEach(item => {
-                                if (item.key == 'lp') {
-                                        item.hidden = item.type == 'input' ? false : true;
-                                }
-                                if (item.key == 'std_symbol' || item.key == 'lp_symbol') {
-                                        item.disabled = true;
-                                }
-                        });
-                        this.default_value = Object.assign({}, this.default_value, row);
+                        console.log('1234',row);
+                        this.edit_symbol_dialog.show = true;
+                        this.$nextTick(()=>{
+                                Object.assign(this.default_value , row);
+                         });
+                       
+
                 },
-                onSubmit(data) {
-                        var tradeEnable = data['trade_enable'] === true ? true : false;
-                        var quoteEnable = data['quote_enable'] === true ? true : false;
-                        var weight = Number(data['weight']);
-                        var min_qty = Number(data['min_qty']);
-                        var contract_size = Number(data['contract_size']);
-                        //api jiekou shunxu youwu
-                        var args = [data.lp, data.lp_symbol, data.std_symbol, quoteEnable, tradeEnable, weight, min_qty, contract_size];
-                        var params = {
-                                func_name: 'router_api.lp_add_symbol',
-                                args
-                        }
-                        CommonApi.postFormAjax.call(this, params, res => {
-                                this.symbolDialog.show = false;
-                                if (this.symbolDialog.title.text = this.$t('Add LP symbol')) {
-                                        this.get_global_std_symbols();
-                                }
+                // onSubmit(data) {
+                //         var tradeEnable = data['trade_enable'] === true ? true : false;
+                //         var quoteEnable = data['quote_enable'] === true ? true : false;
+                //         var weight = Number(data['weight']);
+                //         var min_qty = Number(data['min_qty']);
+                //         var contract_size = Number(data['contract_size']);
+                //         //api jiekou shunxu youwu
+                //         var args = [data.lp, data.lp_symbol, data.std_symbol, quoteEnable, tradeEnable, weight, min_qty, contract_size];
+                //         var params = {
+                //                 func_name: 'router_api.lp_add_symbol',
+                //                 args
+                //         }
+                //         CommonApi.postFormAjax.call(this, params, res => {
+                //                 this.symbolDialog.show = false;
+                //                 if (this.symbolDialog.title.text = this.$t('Add LP symbol')) {
+                //                         this.get_global_std_symbols();
+                //                 }
+                //                 this.load_data();
+                //         });
+                // },
+                add_symbol_submit(data) {
+                        var weight,min_qty,contract_size,quote_enable,trade_enable;
+                        console.log('submit_symbols', data);
+                         weight = data.weight*1;
+                         min_qty = data.min_qty*1;
+                         contract_size = data.contract_size*1;
+    
+                         var params={
+                                func_name:'router_api.lp_add_symbol',
+                                args:[data.lp,data.std_symbol,data.lp_symbol,data.quote_enable,data.trade_enable,weight,min_qty,contract_size]
+                         }
+                         CommonApi.postFormAjax.call(this,params,data=>{
                                 this.load_data();
-                        });
+                                this.get_global_std_symbols();
+                                this.onCloseDialog('add_symbol_dialog');
+                         });
+                },
+                edit_symbol_submit(data) {
+                       var weight,min_qty,contract_size,quote_enable,trade_enable;
+                        console.log('submit_symbols', data);
+                         weight = parseInt(data.weight);
+                         min_qty = parseInt(data.min_qty);
+                         contract_size = data.contract_size*1;
+                         var params={
+                                func_name:'router_api.lp_add_symbol',
+                                args:[data.lp,data.std_symbol,data.lp_symbol,data.quote_enable,data.trade_enable,weight,min_qty,contract_size]
+                         }
+                         CommonApi.postFormAjax.call(this,params,data=>{
+                                this.load_data();
+                                this.onCloseDialog('edit_symbol_dialog');
+                         }); 
                 },
                 onDeleteSymbol(row) {
                         this.$confirm('Are you sure you want to detele this?', 'prompt', {

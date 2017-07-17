@@ -3,6 +3,9 @@ import {
     FormData1
 } from 'common/';
 import Vue from 'vue';
+import {
+    common as CommonApi
+} from 'config/request.js';
 module.exports = {
     name: 'remark',
     components: {
@@ -37,7 +40,7 @@ module.exports = {
                         })()
             },
             desc: '请选择',
-            label: 'source'
+            label: 'Source'
         },
         {
             type: 'input',
@@ -56,34 +59,44 @@ module.exports = {
             this.$store.dispatch('delete_copy_to_new_group_dialogs',key);  
       },
       onSubmit(data, key) {
-                  var source = data.source;
-                  var group = data.group;
-                  if (group === "" || group === r.group) {
-                    alert("Group invalid");
-                    return false;
-                  };
+                
+
+                  // if (group === "" || group === r.group) {
+                    
+                  //   return false;
+                  // };
                   var new_rules = [];
-                  var ref = this.$store.state.gloabl.trade_rules;
+                  var ref = this.$store.state.traderule.trade_rules;
                   for(var i = 0;i<ref.length; i++ ){
-                      rule = ref[i];
-                      var source =  this.$store.state.traderule.copy_to_new_goup[key].source;
-                      var group =  this.$store.state.traderule.copy_to_new_goup[key].group;
+                      var rule = ref[i];
+                      var source =  this.$store.state.traderule.copy_to_new_group_dialogs[key].source;
+                      var group =  this.$store.state.traderule.copy_to_new_group_dialogs[key].group;
                       if(rule.source === source && rule.group === group ){
-                          var new_rule = this.deepCopy(rule);
-                          new_rule.source = source;
-                          new_rule.group = group;
+                        console.log('this',this,rule);
+                          var new_rule = rule;
+                          new_rule.source =data.source;
+                          new_rule.group = data.group;
                           new_rules.push(new_rule);
                       }
                   }
                   var params = {
                           func_name: "router_api.trade_add_rules",
-                          args: [data.group, data.remark]
+                          args: [new_rules]
                   }
                   CommonApi.postFormAjax.call(this, params, data => {
-                          closeDialog(key);
-                          this.$store.dispatch('update_traderule_remark');
+                          this.closeDialog(key);
+                          this.$store.dispatch('update_traderule_table',true);
+                  },{
+                    errFn(err){
+                      console.log(' chucuole ');
+                         this.$message({
+                              showClose: true,
+                              message:  err.response.data,
+                              type: 'error'
+                            });
+                    }
                   });
-          }
+      }
     },
     mounted(){
           

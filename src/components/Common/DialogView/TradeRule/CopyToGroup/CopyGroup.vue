@@ -1,7 +1,7 @@
 <template>
     <div > 
         <drag-dialog
-                v-for = "(item,key) in $store.state.traderule.copy_group_dialogs"
+                v-for = "(item,key) in $store.state.traderule.copy_to_new_group_dialogs"
                 :key = 'key'
                 :title="item.title"
                 @close="closeDialog(key)"

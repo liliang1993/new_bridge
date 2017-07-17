@@ -265,7 +265,6 @@ module.exports = {
                         this.getCurrentPageTable();
                         this.add_user_dialog.show  = false;
                        },{errFn(err){
-                            console.log('12345');
                             this.$message({
                               showClose: true,
                               message:  err.response.data,

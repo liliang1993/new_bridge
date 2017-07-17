@@ -11,7 +11,7 @@
           <template slot="rulesdetail" scope="scope">
               <a
                   href="javascript:void(0);"
-                  @click = "GroupTradeRulesTable"
+                  @click = "GroupTradeRulesTable(scope.row)"
                   > View rules</a>
           </template>
           <template slot="copygroup" scope="scope">

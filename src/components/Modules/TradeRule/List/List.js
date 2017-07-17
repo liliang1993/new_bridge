@@ -289,6 +289,19 @@ module.exports = {
                     }]
                 }
             ]
+        },
+        get_up_traderule_table(){
+            return this.$store.state.traderule.update_traderule_table;
+        }
+    },
+    watch:{
+        get_up_traderule_table(v){
+                if(v){
+                    if(v==true){
+                         this.load_data();
+                         this.$store.dispatch('update_traderule_table',false);
+                    }
+                }
         }
     },
     methods: {
@@ -302,8 +315,8 @@ module.exports = {
             }
             var key = row.source+"_"+row.group;
             var default_value = {
-                remark: row.remark
-                // group: row.group
+                remark: row.remark,
+                group: row.group
             };
             console.log('default_value',default_value);
             var config  = Object.assign({},{default_value},{title});
@@ -312,40 +325,37 @@ module.exports = {
                 this.$store.dispatch('update_remark_dialogs', {key,config});
             };
         },
+        open_create_new_group_dialog(){
+               this.create_new_group_dialog.show = true;
+        },
         copy_to_new_group(row){
              console.log('row',row);
              var source = row.source;
              var group = row.group;
-            var key = [source,group];
-            var config  = Object.assign({},{source,group});
+            var key = source+"_"+group;
+            var title = 'Copy  '+source+' - '+group+' to new group';
+            var config  = Object.assign({},{source,group,title});
             if (!(key in this.$store.state.traderule.copy_to_new_group_dialogs)) {
                 this.$store.dispatch('update_copy_to_new_group_dialogs', {key,config});
             };
         },
-        create_new_group_submit(){
-
-        },
-        GroupTradeRulesTable(){
+        GroupTradeRulesTable(row){
             var title = {
                 text: 'Trade Rules - Source:' + row.source + " Group: "+row.group 
             }
-            var key = [row.source,row.group];
-            var tab = {
-                
-            };
-            var remark_opt = {};
-            remark_opt[key] = {
-                title,
-                default_value
-            };
-            if (!(key in this.$store.state.traderule.remark_groups)) {
-                this.$store.dispatch('update_remark_dialogs', remark_opt);
+            var source = row.source;
+            var group = row.group;
+            var key = [source,group];
+            var title = 'Trade Rules - Source:' +source+' Group: '+group;
+            var config = Object.assign({},{source,group,title});
+            if (!(key in this.$store.state.traderule.view_rules_dialogs)) {
+                this.$store.dispatch('update_view_rules_dialogs', {key,config});
             };
         },
         render_groups(rules) {
             var i, j, key, len, len1, rule, rule_key, source_group, source_groups, source_groups_dict;
             source_groups = [];
-            this.trade_rules = rules;
+            this.$store.dispatch('update_trade_rules',rules);
             source_groups_dict = new Object;
             for (i = 0, len = rules.length; i < len; i++) {
                 rule = rules[i];

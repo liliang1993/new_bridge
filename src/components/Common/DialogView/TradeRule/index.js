@@ -1,4 +1,5 @@
 module.exports = {
     Remark: require('./Remark/'),
-    CopyGroup: require('./CopyToGroup/')
+    CopyGroup: require('./CopyToGroup/'),
+    ViewRules: require('./ViewRules/')
 };

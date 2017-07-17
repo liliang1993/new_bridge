@@ -68,6 +68,13 @@ module.exports = {
 			resolve();
 		});
 	},
-
+	delete_view_rules_dialogs:({
+		commit
+	},view_rules_dialog_id) => {
+		return new Promise((resolve, reject) => {
+			commit(types.DELETE_VIEW_RULES_DIALOGS,view_rules_dialog_id);
+			resolve();
+		});
+	},
 
 };

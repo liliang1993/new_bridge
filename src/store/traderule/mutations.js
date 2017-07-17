@@ -40,9 +40,10 @@ module.exports = {
 [types.UPDATE_VIEW_RULES_DIALOGS](state,view_rules_dialog) {
              Vue.set(state.view_rules_dialogs,view_rules_dialog.key,view_rules_dialog.config);
     },
-[types.DELETE_VIEW_RULES_DIALOGS](state,view_rules_dialog) {
-              for(var k in state.remark_dialogs){
-                    if(remark_dialog_id === k){
+[types.DELETE_VIEW_RULES_DIALOGS](state,view_rules_dialog_id) {
+              for(var k in state.view_rules_dialogs){
+                console.log('view_rules_dialog_id',view_rules_dialog_id);
+                    if(view_rules_dialog_id === k){
                         Vue.delete(state.view_rules_dialogs,k);
                     }
             }

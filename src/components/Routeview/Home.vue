@@ -13,17 +13,28 @@
         </div>
         <traderule-remark></traderule-remark> 
         <copy-group></copy-group>
+        <drag-dialog
+                v-for = "(item,key) in $store.state.traderule.view_rules_dialogs"
+                :key = 'key'
+                :title="item.title"
+                @close="onCloseDialog(key)"
+        >
+            <view-rules :ViewRule = 'item.tableData'></view-rules>
+        </drag-dialog>
+        
     </div>
 </template>
 <script>
     import {
         Bread,
         HeadNav,
-        LeftMenu
+        LeftMenu,
+        DragDialog
     } from '../Common/';
     import {
         Remark as TraderuleRemark,
-        CopyGroup
+        CopyGroup,
+        ViewRules
     }from '../Common/DialogView/TradeRule';
     export default {
         name: 'home',
@@ -31,8 +42,18 @@
             Bread,
             HeadNav,
             LeftMenu,
+            DragDialog,
             TraderuleRemark,
-             CopyGroup
+             CopyGroup,
+             ViewRules
+        },
+        methods:{
+            onCloseDialog(key){
+                this.$store.dispatch('delete_view_rules_dialogs',key);
+            }
+        },
+        mounted(){
+            console.log('qweqwqweqwe',this.$store.state.traderule.view_rules_dialogs);
         }
     }
 </script>

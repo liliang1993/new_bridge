@@ -73,7 +73,7 @@ module.exports = {
                       var group =  this.$store.state.traderule.copy_to_new_group_dialogs[key].group;
                       if(rule.source === source && rule.group === group ){
                         console.log('this',this,rule);
-                          var new_rule = rule;
+                          var new_rule = this.deepCopy(rule);
                           new_rule.source =data.source;
                           new_rule.group = data.group;
                           new_rules.push(new_rule);

@@ -19,7 +19,7 @@
                 :title="item.title"
                 @close="onCloseDialog(key)"
         >
-            <view-rules :ViewRule = 'item.tableData'></view-rules>
+            <view-rules :Config= 'item'></view-rules>
         </drag-dialog>
         
     </div>

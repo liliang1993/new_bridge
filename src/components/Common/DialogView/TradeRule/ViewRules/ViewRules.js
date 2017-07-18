@@ -2,20 +2,23 @@ import {
   DragDialog,
   FormData1
 } from 'common/';
-import Vue from 'vue';
+import {
+    common as CommonApi
+} from 'config/request.js';
 module.exports = {
-  name: 'remark',
+  name: 'view-rules',
   components: {
     DragDialog,
     FormData1
   },
   data() {
     return {
-      batch_edit_flag: false,
+      editFlag:false,
       batch_flag: true,
       batch_datas: [],
       keyword: '',
-      tableData: this.ViewRule || [],
+      tableData: [],
+      config: this.Config,
       columns: [{
         attr: {
           type: 'selection',
@@ -36,7 +39,7 @@ module.exports = {
           label: this.$t('STD symbol'),
           width: 90,
           sortable: true,
-          align: 'center',
+          align: 'center'
         }
       }, {
         attr: {
@@ -45,9 +48,7 @@ module.exports = {
           width: 120,
           sortable: true,
           align: 'center',
-          formatter: function(item) {
-            return ">=" + item.attributes.route_type.threshold + ' ' + item.attributes.route_type.right + '  else  ' + item.attributes.route_type.left;
-          }
+          scopedSlot: 'route_type',
         }
       }, {
         attr: {
@@ -64,7 +65,8 @@ module.exports = {
           label: this.$t('Coverage'),
           width: 100,
           sortable: true,
-          align: 'center'
+          align: 'center',
+          scopedSlot:'coverage',
         }
       }, {
         attr: {
@@ -72,8 +74,8 @@ module.exports = {
           label: this.$t('BetterFill'),
           width: 100,
           sortable: true,
-          align: 'center'
-            // scopedSlot:'123',
+          align: 'center',
+          scopedSlot:'better_fill'
         }
       }, {
         attr: {
@@ -89,7 +91,7 @@ module.exports = {
             });
             return res;
           },
-          scopedSlot: 'slippages_normal'
+          scopedSlot: 'slippages'
         }
       }, {
         attr: {
@@ -98,10 +100,7 @@ module.exports = {
           minWidth: 100,
           sortable: true,
           align: 'center',
-          formatter: function(item) {
-            return String(item.attributes.open_partial);
-          },
-          // scopedSlot:''
+          scopedSlot:'open_partial'
         }
       }, {
         attr: {
@@ -110,10 +109,7 @@ module.exports = {
           width: 120,
           sortable: true,
           align: 'center',
-          formatter: function(item) {
-            return item.attributes.open_lp_rejected_retry == true ? 'true' : 'false';
-          },
-          scopedSlot: ''
+          scopedSlot: 'open_lp_rejected_retry'
         }
       }, {
         attr: {
@@ -122,7 +118,7 @@ module.exports = {
           width: 120,
           sortable: true,
           align: 'center',
-          // scopedSlot:''
+          scopedSlot:'bbook_exec_type'
         }
       }, {
         attr: {
@@ -131,22 +127,12 @@ module.exports = {
           minWidth: 60,
           sortable: true,
           align: 'center',
-          formatter(item) {
-            var res = '';
-            if (item.attributes.lps.length !== 0) {
-              return item.attributes.lps.join(',');
-            } else {
-              return 'ALL'
-            }
-          },
-          // scopedSlot:''
-        }
+          scopedSlot:'lps'
+          }
       }, {
         attr: {
-          // prop: 'bbook_exec_type',
           label: this.$t('Operation'),
           minWidth: 80,
-          // sortable: true,
           align: 'center',
           scopedSlot: 'handler'
         }
@@ -169,10 +155,10 @@ module.exports = {
           columns: this.columns
         }
       }
+    },
+    get_trade_rules() {
+      return this.$store.state.traderule.trade_rules;
     }
-    // getRemarkDialog() {
-    //   return this.$store.state.traderule.view_rules_dialogs;
-    // }
   },
   methods: {
     closeDialog(key) {
@@ -186,21 +172,19 @@ module.exports = {
       this.$confirm('你确定删除吗', 'prompt', {
         type: 'warning'
       }).then(() => {
-        this.$emit('onSingleDeleteRule', row);
-      }).catch(() => {
-
-      });
-    },
-    onSingleDeleteRule(row) {
-      for (var i = o; i < this.tableData.length; i++) {
-        var rule = this.tableData[i];
-        if (row.mt4_symbol === rule.mt4_symbol) {
-          this.tableData.splice(i, 1);
+         var params ={
+            func_name: 'router_api.trade_del_rule',
+            args: [row.source,row.group,row.mt4_symbol]
         };
-      }
+        CommonApi.postFormAjax.call(this, params,data=>{
+                this.$store.dispatch('update_traderule_table',true);
+        })    
+      })
     },
 
+  group_rules_edited(){
 
+  },
     toggleSelection(rows) {
       if (rows) {
         console.log('22222');
@@ -221,53 +205,73 @@ module.exports = {
       }
     },
     onBatchDelete() {
+      var selected_rules , i ,len,rule;
+      selected_rules = [ ];
       this.$confirm('你确定删除吗', 'prompt', {
         type: 'warning'
       }).then(() => {
-        this.$emit('onBatchDeleteRule', this.batch_datas);
-      }).catch(() => {
-
-      });
+        console.log('this.batch_datas', this.batch_datas);
+        for(i = 0, len = this.batch_datas.length;i<len ; i++){
+                rule = this.batch_datas[i];
+                selected_rules.push({
+                    source: rule.source,
+                    group: rule.group,
+                    mt4_symbol : rule.mt4_symbol
+                });
+        }
+        var params ={
+            func_name: 'router_api.trade_del_rules',
+            args: [selected_rules]
+        };
+        CommonApi.postFormAjax.call(this, params,data=>{
+                this.$store.dispatch('update_traderule_table',true);
+        }) 
+      })
     },
     onEditRules(){        
-          this.batch_edit_flag=true;
-          console.log('1234');
-          Object.assign(this.columns[3].attr,{scopedSlot:'route_type',prop:''});
-          // Object.assign(this.columns[4].attr,{scopedSlot:'limit_order_types_edit',prop:''});
-          Object.assign(this.columns[5].attr,{scopedSlot:'coverage',prop:''});
-          Object.assign(this.columns[6].attr,{scopedSlot:'better_fill',prop:''});
-          Object.assign(this.columns[8].attr,{scopedSlot:'open_partial',prop:''});
-          Object.assign(this.columns[10].attr,{scopedSlot:'bbook_exec_type',prop:''});
+          this.editFlag =true;
           console.log('this.columns',this.columns);
-          // this.$set(this.columns,3,{attr:route_type});
-          // this.$set(this.columns,4,{attr:limit_order_types});
-          // this.$set(this.columns,5,{attr:coverage});
-          // this.$set(this.columns,6,{attr:better_fill});
-          // this.$set(this.columns,8,{attr:open_partial});
-          // this.$set(this.columns,10,{attr:bbook_exec_type});
        },
     onSubmitChanges(){
-            // this.$delete(this.columns[3].attr,'scopedSlot');
-            this.$set(this.columns[3].attr,'scopedSlot','route_type');
-            this.$set(this.columns[3].attr,'prop','route_type');
-            console.log('this.columns',this.columns);
-    }
+        this.editFlag =false;
+        console.log('this.columns',this.columns);
+    },
+    load_data(){
+                this.tableData = [];
+                for(var k in this.$store.state.traderule.trade_rules){
+                   var rule = this.$store.state.traderule.trade_rules[k];
+                   var source = this.config.source;
+                   var group = this.config.group;
+                  if(rule.source === source && rule.group ===group){
+                    var new_rule = this.deepCopy(rule);
+                        new_rule.source = source;
+                        new_rule.group = group;
+                        this.tableData.push(new_rule); 
+                }
+            }
+      }
   },
   mounted() {
-
+        this.load_data();
   },
   props: {
-    ViewRule: {
-      type: Array,
+    Config: {
+      type: Object,
       required: true
     }
   },
   watch: {
-    ViewRule(v){
+    Config(v){
             if(v){
-              this.tableData =v; 
+              this.config =v; 
             }
-        }
+        },
+    get_trade_rules(v){
+           console.log('config',v);
+          if(v){
+                 this.load_data();
+          }
+    }
   }
 
 }

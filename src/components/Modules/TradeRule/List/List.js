@@ -348,16 +348,7 @@ module.exports = {
             var key = source+"_"+group;;
             var title = 'Trade Rules - Source:' +source+' Group: '+group;
             var tableData= [];
-            for(var k in this.$store.state.traderule.trade_rules){
-                var rule = this.$store.state.traderule.trade_rules[k];
-                if(rule.source === source && rule.group === group){
-                    var new_rule = this.deepCopy(rule);
-                        new_rule.source =source;
-                        new_rule.group = group;
-                        tableData.push(new_rule); 
-                }
-            }
-            var config = Object.assign({},{source,group,title,tableData});
+            var config = Object.assign({},{source,group,title});
             if (!(key in this.$store.state.traderule.view_rules_dialogs)) {
                 this.$store.dispatch('update_view_rules_dialogs', {key,config});
             };
@@ -444,13 +435,13 @@ module.exports = {
                 }
             })
         },
-        load_data() {
+        load_data(callback) {
             var params = {
                 func_name: 'router_api.trade_get_all_rules'
             }
             CommonApi.postFormAjax.call(this, params, data => {
                 this.trade_rules = data;
-                console.log('trade_rules',this.trade_rules);
+                callback&&callback();
                 this.render_groups(data);
                 this.render_remarks();
             })

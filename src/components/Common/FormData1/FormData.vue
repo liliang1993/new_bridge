@@ -109,6 +109,21 @@
                                     </div>
                     </template>
                 <!--
+                    select-input
+                 -->
+                 <el-select
+                    v-if='field.type==="selectInput" '
+                    v-model="submit_data[field.key]"
+                    :multiple='field.multiple ? true : false'
+                    :placeholder="field.desc"
+                    @change ='onchange'
+                >
+                    <el-option
+                        v-for='item in field.value.list'
+                        :value="item.value"
+                        :label="item.text || item.value"></el-option>
+                </el-select>
+                <!--
                     radia,单选
                  -->
                 <el-radio-group

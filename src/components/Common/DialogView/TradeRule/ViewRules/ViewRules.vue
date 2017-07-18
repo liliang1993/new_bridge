@@ -37,6 +37,7 @@
                  @click='onSingleDelete(scope.row)' ></el-button>
         </template>
         <template slot="route_type" scope="scope">
+                <div  v-if = 'editFlag'>
                         <div class='route_type'>
                         <span>if size >=</span>
                         <el-input 
@@ -63,14 +64,18 @@
                                 <el-option value="ratio" label="ratio"></el-option>             
                             </el-select>
                        </div>
+                </div>
+                <div v-if = '!editFlag'>
+                          &gt;=&nbsp;{{scope.row.attributes.route_type.threshold}}&nbsp;then&nbsp;{{scope.row.attributes.route_type.right}}&nbsp;else&nbsp;{{scope.row.attributes.route_type.left}}
+                </div>
         </template>
-        <template slot="limit_order_types_normal" scope="scope">
-               <div 
+        <template slot="limit_order_types" scope="scope">
+               <div v-if = '!editFlag'
                v-for='item in scope.row.attributes.limit_order_types'>
-               {{$store.state.global.limit_order_types[item.type]+' '+item.tol}}</div>
+               {{$store.state.global.limit_order_types[item.type]+' '+item.tol}}
+               </div>
         </template>
-        <template slot="limit_order_types_edit" scope="scope">
-               <div
+               <!-- <div
                 class="limit_order_types_edit" 
                 v-for='(item,index) in  $store.state.global.limit_order_types'  
                >
@@ -83,26 +88,28 @@
                     v-model="scope.row.convert_limit_order_types[index].checkbox_val" 
                     class='checkbox_item' slot="prepend"  size='small'  >{{item}}</el-checkbox>
                 </el-input>
-               </div>
-        </template>
-          
+               </div> -->       
         <template slot="coverage" scope="scope">
-                <el-input 
-                            type="number"
+                <el-input
+                            v-if='editFlag'  
+                            type="input"
                             v-model="scope.row.attributes.coverage"
                             >
-                            </el-input>             
+                </el-input>          
+                <span v-if = '!editFlag'>{{scope.row.attributes.coverage}}</span>   
           </template>
           <template slot="better_fill" scope="scope">
               <el-input 
+                            v-if='editFlag'
                             type="number"
                             v-model="scope.row.attributes.better_fill"
                             >
-                            </el-input>
+             </el-input>
+            <span v-if = '!editFlag'>{{scope.row.attributes.better_fill}}</span>   
           </template>
-          <template slot="slippages_normal" scope="scope">
-               <div v-for='item in scope.row.attributes.slippages'>{{item.join(',')}}</div>
-        </template>
+<!--           <template slot="slippages" scope="scope">
+               <div v-if= '!editFlag' v-for='item in scope.row.attributes.slippages'>{{item.join(',')}}</div>
+        </template> -->
           <!-- <template slot="slippages" scope="scope">
                     <el-row  v-if='scope.row.attributes.slippages.length>0' v-for="group in scope.row.attributes.slippages" style="margin-left:10px;margin-bottom:10px">
                         <el-col :span="3"  v-for="inputItem in group">
@@ -122,24 +129,28 @@
                     </el-row>
           </template> -->
           <template slot="open_partial" scope="scope">
-                <el-select  v-model="scope.row.attributes.open_partial ">
+                <el-select v-if='editFlag' v-model="scope.row.attributes.open_partial ">
                     <el-option :value="true" label="true"></el-option>
                     <el-option :value="false" label="false"></el-option>             
                 </el-select>
+                <span v-if='!editFlag'>{{scope.row.attributes.open_partial}}</span>
           </template>       
         <template slot="bbook_exec_type" scope="scope">
-                <el-select  v-model="scope.row.attributes.bbook_exec_type">
+                <el-select v-if='editFlag'  v-model="scope.row.attributes.bbook_exec_type">
                              <el-option value="vwap" label="vwap"></el-option>
                              <el-option value="worst" label="worst"></el-option>           
                 </el-select>
+                <span v-if='!editFlag'>{{scope.row.attributes.bbook_exec_type}}</span>
         </template>
         <template slot="lps" scope="scope">
-                 <el-checkbox-group v-model="scope.row.attributes.lps">
-                    <el-checkbox v-for='item in option.lps' :label='item'></el-checkbox>
+                 <el-checkbox-group v-if='editFlag'  v-model="scope.row.attributes.lps">
+                    <el-checkbox v-for='item in $store.state.global.lps' :label='item'></el-checkbox>
                   </el-checkbox-group>
+                   <div v-if= '!editFlag'>
+                          <span v-for ='lp in scope.row.attributes.lps'>{{lp}}&nbsp;</span>
+                   </div>
         </template>
     </bel-table> 
-    </drag-dialog> 
   </div>
 </template>
   

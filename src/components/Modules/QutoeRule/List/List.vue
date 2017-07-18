@@ -35,16 +35,16 @@
                 :isModal = "ruleDialog.isModal"
                 @close="onCloseRuleDialog"
           >
-                <form-data
+                <form-data1
                   style="padding:20px 40px 20px 20px"
                   :LabelWidth = 'ruleDialog.labelWidth' 
                   ref='form-data'
-                  :FieldList='fieldlist'
+                  :FieldList='add_rule_fieldlist'
                   :DefaultValue='default_value'
-                  :Rules='rules'
+                  @onSelected = 'onSelected'
                   @onSubmit='onSubmit'
                   >
-                  </form-data>
+                  </form-data1>
       </drag-dialog>
   </div>
 </template>

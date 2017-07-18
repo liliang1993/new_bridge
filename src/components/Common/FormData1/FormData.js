@@ -88,6 +88,7 @@ module.exports = {
                             this.wangEditor.has = true;
                           }
                           break;
+                         
                           case 'CheckboxAndInputList': 
                                 this.$set(this.submit_data,field.key,[]);
                                 for(var j = 0;j < field.spec.length;j++){
@@ -189,7 +190,6 @@ module.exports = {
                             }
                             res[key].push(group_values);
                     }  
-                     console.log('11111', res[key]);
                     break;  
                     case  'CheckboxAndInputList' :
                        res[key] = this.get_checked_list_val(key);
@@ -199,7 +199,6 @@ module.exports = {
                               break;
                 }
             }
-            console.log('submit',res);
               res= Object.assign({},this.submit_data,res);
             if (this.rules) {
                 this.$refs[ref].validate((valid) => {
@@ -223,7 +222,18 @@ module.exports = {
         onRemoveInputGroup(key,index){
             this.submit_data[key].splice(index,1);
         },
-
+        // find_field(key){
+        //   var i,len;
+        //   for( i = 0, len = this.fields.length;i<len; i++){
+        //         var field = this.fields[i];
+        //         if(key == field[key]){
+        //               return field;
+        //         }
+        //   }
+        // },
+        onchange(val){
+              this.$emit('onSelected',val);
+        },
         onCheckboxChange(key) {
             var checkall_temp = this.submit_data[key];
 
@@ -257,9 +267,6 @@ module.exports = {
     created(){
       console.log('submit_data',this.DefaultValue);
         this.deepObj();
-    },
-    mounted(){
-      // console.log('8888888',this.DefaultValue);
     },
 
     /**
@@ -305,7 +312,6 @@ module.exports = {
            deep: true,
            handler: function(val, oldVal){
               this.fields =val;
-              console.log('FieldList',val);
            }
         },
         // DefaultValue:{
@@ -317,7 +323,6 @@ module.exports = {
         DefaultValue(v) {
       if (v) {
         // this.submit_data = v;
-        console.log('default55555555555',v);
       }
     },
         // DefaultValue: {

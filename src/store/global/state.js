@@ -8,7 +8,7 @@ module.exports = {
     context : store.get('context')||{},
     user_info: store.get('user_info'),
     roles: ["Admin","RulesEditor","Whitelabel","WhitelabelPro"],
-    quote_types:  ["asian", "spread", "raw", "delta"],
+    quote_types:  ["raw", "delta","asian", "spread",],
     sources: ['risehills','solid'],
     lps: store.get('lps'),
     std_symbols: store.get('std_symbols'),
